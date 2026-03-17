@@ -30,7 +30,7 @@
       --cyan: #06B6D4;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
 
     body {
       font-family: 'Inter', system-ui, sans-serif;
@@ -102,7 +102,7 @@
     }
     .card:hover { border-color: var(--border-accent); transform: translateY(-2px); }
 
-    .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+    .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 24px; }
     .portfolio-card .card-icon {
       width: 48px; height: 48px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px;
