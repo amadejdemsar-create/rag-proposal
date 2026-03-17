@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI/LLM Razvijalec &middot; Portfolio & RAG Predlog</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0F0F14;
+      --surface-1: #16161D;
+      --surface-2: #1C1C26;
+      --surface-3: #22222E;
+      --indigo: #4F46E5;
+      --indigo-light: #6366F1;
+      --violet: #8B5CF6;
+      --text: #FFFFFF;
+      --text-muted: rgba(255, 255, 255, 0.65);
+      --text-dim: rgba(255, 255, 255, 0.45);
+      --border: rgba(255, 255, 255, 0.06);
+      --border-accent: rgba(79, 70, 229, 0.2);
+      --green: #22C55E;
+      --blue: #3B82F6;
+      --amber: #F59E0B;
+      --red: #EF4444;
+      --cyan: #06B6D4;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(79, 70, 229, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79, 70, 229, 0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .orb { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+    .orb-1 { width: 600px; height: 600px; background: rgba(79, 70, 229, 0.07); top: -200px; right: -200px; }
+    .orb-2 { width: 500px; height: 500px; background: rgba(139, 92, 246, 0.05); bottom: 20%; left: -150px; }
+    .orb-3 { width: 400px; height: 400px; background: rgba(79, 70, 229, 0.06); top: 60%; right: -100px; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15, 15, 20, 0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border); padding: 16px 0;
+    }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .nav-brand { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .nav-brand span { color: var(--indigo); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    .hero { padding: 100px 0 80px; text-align: center; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 100px;
+      border: 1px solid var(--border-accent); background: rgba(79, 70, 229, 0.06);
+      color: var(--indigo-light); font-size: 12px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 28px;
+    }
+    .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+    h1 { font-family: 'Playfair Display', serif; font-size: clamp(40px, 6vw, 64px); font-weight: 700; line-height: 1.15; margin-bottom: 20px; }
+    h1 em { font-style: italic; color: var(--text-muted); }
+    .hero-sub { font-size: 18px; color: var(--text-muted); max-width: 660px; margin: 0 auto 40px; line-height: 1.7; }
+    .hero-stats { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-value { font-size: 32px; font-weight: 800; background: linear-gradient(135deg, var(--indigo-light), var(--violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat-label { font-size: 13px; color: var(--text-dim); font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 4px; }
+
+    section { padding: 80px 0; }
+    .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--indigo-light); margin-bottom: 12px; }
+    h2 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 40px); font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+    h2 em { font-style: italic; color: var(--text-muted); }
+    .section-desc { color: var(--text-muted); font-size: 16px; max-width: 600px; margin-bottom: 48px; line-height: 1.7; }
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border-accent), transparent); }
+
+    .card {
+      background: var(--surface-1); border: 1px solid var(--border); border-radius: 16px;
+      padding: 32px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .card:hover { border-color: var(--border-accent); transform: translateY(-2px); }
+
+    .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
+    .portfolio-card .card-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 20px;
+    }
+    .portfolio-card h3 { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+    .portfolio-card h3 a { color: inherit; text-decoration: none; transition: color 0.2s; }
+    .portfolio-card h3 a:hover { color: var(--indigo-light); }
+    .portfolio-card h3 .link-icon { font-size: 14px; color: var(--indigo-light); margin-left: 6px; opacity: 0; transition: opacity 0.2s; }
+    .portfolio-card:hover h3 .link-icon { opacity: 1; }
+    .live-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 16px; padding: 8px 16px; border-radius: 8px;
+      background: rgba(79, 70, 229, 0.1); border: 1px solid rgba(79, 70, 229, 0.25);
+      color: var(--indigo-light); font-size: 13px; font-weight: 600;
+      text-decoration: none; transition: background 0.2s, border-color 0.2s;
+    }
+    .live-link:hover { background: rgba(79, 70, 229, 0.18); border-color: rgba(79, 70, 229, 0.4); }
+    .live-link svg { flex-shrink: 0; }
+    .portfolio-card p { color: var(--text-muted); font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tech-tag { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: rgba(79, 70, 229, 0.08); color: var(--indigo-light); border: 1px solid rgba(79, 70, 229, 0.15); letter-spacing: 0.02em; }
+    .rag-tag { background: rgba(34, 197, 94, 0.1); color: var(--green); border-color: rgba(34, 197, 94, 0.2); }
+    .relevance-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px; border-radius: 100px;
+      background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.25);
+      color: var(--green); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px;
+    }
+
+    /* Models */
+    .model-grid { display: grid; gap: 16px; margin-top: 32px; }
+    .model-card {
+      display: grid; grid-template-columns: 56px 1fr auto auto auto;
+      align-items: center; gap: 20px; padding: 20px 24px;
+      background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px;
+      transition: border-color 0.2s;
+    }
+    .model-card:hover { border-color: var(--border-accent); }
+    .model-logo {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; background: var(--surface-2); flex-shrink: 0;
+    }
+    .model-logo img, .model-logo svg { width: 26px; height: 26px; object-fit: contain; }
+    .model-info h4 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .model-info span { font-size: 12px; color: var(--text-dim); }
+    .model-price { text-align: right; min-width: 80px; }
+    .model-price .price { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 500; color: var(--text); }
+    .model-price .label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.05em; }
+    .model-use-case { min-width: 140px; }
+    .use-pill { padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 600; display: inline-block; }
+    .use-complex { background: rgba(139, 92, 246, 0.12); color: var(--violet); border: 1px solid rgba(139, 92, 246, 0.25); }
+    .use-balanced { background: rgba(59, 130, 246, 0.12); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.25); }
+    .use-fast { background: rgba(34, 197, 94, 0.12); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.25); }
+    .use-premium { background: rgba(245, 158, 11, 0.12); color: var(--amber); border: 1px solid rgba(245, 158, 11, 0.25); }
+
+    .model-header {
+      display: grid; grid-template-columns: 56px 1fr auto auto auto;
+      gap: 20px; padding: 0 24px 12px;
+      border-bottom: 1px solid var(--border); margin-bottom: 8px;
+    }
+    .model-header span { font-size: 10px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dim); }
+    .model-header span:nth-child(3), .model-header span:nth-child(4) { text-align: right; min-width: 80px; }
+    .model-header span:nth-child(5) { min-width: 140px; }
+
+    /* Embeddings */
+    .embed-highlight {
+      background: var(--surface-1); border: 1px solid var(--border-accent); border-radius: 16px;
+      padding: 36px; margin-top: 32px;
+      display: grid; grid-template-columns: 64px 1fr; gap: 24px; align-items: start;
+    }
+    .embed-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(79, 70, 229, 0.15));
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .embed-icon img, .embed-icon svg { width: 30px; height: 30px; }
+    .embed-content h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .embed-content p { color: var(--text-muted); font-size: 14px; line-height: 1.7; margin-bottom: 16px; }
+    .modality-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .modality-tag { padding: 5px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; background: rgba(6, 182, 212, 0.08); color: var(--cyan); border: 1px solid rgba(6, 182, 212, 0.2); }
+    .embed-price { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-dim); }
+    .embed-price strong { color: var(--text); }
+
+    /* Vector DB */
+    .vdb-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 32px; }
+    .vdb-card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: border-color 0.3s; }
+    .vdb-card:hover { border-color: var(--border-accent); }
+    .vdb-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .vdb-logo { width: 40px; height: 40px; border-radius: 8px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .vdb-logo img, .vdb-logo svg { width: 24px; height: 24px; object-fit: contain; }
+    .vdb-header h4 { font-size: 16px; font-weight: 700; }
+    .vdb-header .vdb-type { font-size: 11px; color: var(--text-dim); }
+    .pros-cons { margin-top: 12px; }
+    .pros-cons ul { list-style: none; padding: 0; }
+    .pros-cons li { font-size: 13px; padding: 4px 0; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+    .pros-cons li.pro, .pros-cons li.con { color: var(--text-muted); }
+    .pros-cons li.pro::before { content: '+'; color: var(--green); font-weight: 700; font-size: 14px; flex-shrink: 0; width: 14px; }
+    .pros-cons li.con::before { content: '\2212'; color: var(--red); font-weight: 700; font-size: 14px; flex-shrink: 0; width: 14px; }
+    .vdb-rec { margin-top: 14px; padding: 10px 14px; border-radius: 8px; background: rgba(79, 70, 229, 0.06); border: 1px solid rgba(79, 70, 229, 0.12); font-size: 12px; color: var(--indigo-light); font-weight: 500; }
+
+    /* Architecture */
+    .arch-container { margin-top: 40px; padding: 40px; background: var(--surface-1); border: 1px solid var(--border); border-radius: 16px; }
+    .arch-flow { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 24px 0; }
+    .arch-box { padding: 14px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; text-align: center; min-width: 120px; border: 1px solid; }
+    .arch-user { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.25); color: var(--blue); }
+    .arch-backend { background: rgba(79, 70, 229, 0.1); border-color: rgba(79, 70, 229, 0.25); color: var(--indigo-light); }
+    .arch-embed { background: rgba(6, 182, 212, 0.1); border-color: rgba(6, 182, 212, 0.25); color: var(--cyan); }
+    .arch-db { background: rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.25); color: var(--violet); }
+    .arch-llm { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.25); color: var(--green); }
+    .arch-arrow { font-size: 20px; color: var(--text-dim); }
+
+    /* Skills grid */
+    .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 32px; }
+    .skill-card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .skill-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .skill-card p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .skill-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+
+    /* Timeline */
+    .timeline { margin-top: 40px; position: relative; padding-left: 28px; }
+    .timeline::before { content: ''; position: absolute; left: 8px; top: 4px; bottom: 4px; width: 2px; background: linear-gradient(to bottom, var(--indigo), var(--violet), var(--cyan)); border-radius: 2px; }
+    .timeline-item { position: relative; padding-bottom: 32px; }
+    .timeline-item:last-child { padding-bottom: 0; }
+    .timeline-dot { position: absolute; left: -24px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--indigo); border: 2px solid var(--bg); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); }
+    .timeline-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .timeline-item .phase-time { font-size: 12px; color: var(--indigo-light); font-weight: 600; margin-bottom: 6px; }
+    .timeline-item p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    .pricing-note { margin-top: 24px; padding: 20px 24px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: flex-start; gap: 14px; }
+    .pricing-note .note-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .pricing-note p { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .pricing-note strong { color: var(--text); }
+
+    footer { padding: 32px 0; border-top: 1px solid var(--border); text-align: center; }
+    footer p { color: var(--text-dim); font-size: 13px; }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero { padding: 60px 0 50px; }
+      .hero-stats { gap: 28px; }
+      .model-card { grid-template-columns: 44px 1fr; gap: 12px; padding: 16px; }
+      .model-price, .model-use-case { grid-column: 2; }
+      .model-price { min-width: auto; text-align: left; }
+      .model-header { display: none; }
+      .arch-flow { flex-direction: column; }
+      .arch-arrow { transform: rotate(90deg); }
+      .embed-highlight { grid-template-columns: 1fr; gap: 16px; }
+      section { padding: 50px 0; }
+      .card { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <nav>
+    <div class="container">
+      <a href="#" class="nav-brand">Amadej<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#proposal">Predlog</a></li>
+        <li><a href="#models">LLM Modeli</a></li>
+        <li><a href="#embeddings">Embeddingi</a></li>
+        <li><a href="#vectordb">Vector DB</a></li>
+        <li><a href="#plan">Plan</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge">Na voljo za projekte</div>
+      <h1>AI/LLM Razvijalec<br><em>Gradnja Inteligentnih Sistemov</em></h1>
+      <p class="hero-sub">Full stack razvijalec, specializiran za razvoj AI aplikacij, RAG sistemov in integracijo LLM modelov. Gradim produkcijske sisteme, ki povezujejo domensko znanje z najnovejsimi AI zmogljivostmi.</p>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value">3+</div>
+          <div class="stat-label">AI Projekti v Produkciji</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">RAG</div>
+          <div class="stat-label">Produkcijske izkusnje</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">Full Stack</div>
+          <div class="stat-label">React + Node + Python</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- Portfolio -->
+  <section id="portfolio">
+    <div class="container">
+      <div class="section-label">Portfolio</div>
+      <h2>Kaj sem <em>zgradil</em></h2>
+      <p class="section-desc">Produkcijske aplikacije, ki demonstrirajo AI integracijo, RAG sisteme, full stack razvoj in skalabilno backend arhitekturo.</p>
+
+      <div class="portfolio-grid">
+        <!-- CoachMeAI -->
+        <div class="card portfolio-card">
+          <div class="relevance-badge">Direktno relevantno: RAG sistem</div>
+          <div class="card-icon" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(79, 70, 229, 0.15)); border: 1px solid rgba(34, 197, 94, 0.2);">
+            <svg width="24" height="24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+          </div>
+          <h3><a href="https://github.com/amadejdemsar-create/Fitness-app" target="_blank" rel="noopener">CoachMeAI <span class="link-icon">&#8599;</span></a></h3>
+          <p>Podatkovno usmerjena fitness aplikacija z AI coaching sistemom, ki temelji na RAG pipeline-u. Uporablja LangChain in OpenAI za razumevanje naravnega jezika v kombinaciji s Pinecone vektorskim iskanjem za pridobivanje personaliziranega fitness znanja. Vkljucuje sledenje treningom s progresivno obremenitvijo, vizualizacijo teze in sledenje prehrani.</p>
+          <div class="tech-tags">
+            <span class="tech-tag rag-tag">LangChain</span>
+            <span class="tech-tag rag-tag">OpenAI API</span>
+            <span class="tech-tag rag-tag">Pinecone</span>
+            <span class="tech-tag rag-tag">RAG Pipeline</span>
+            <span class="tech-tag">React 19</span>
+            <span class="tech-tag">TypeScript</span>
+            <span class="tech-tag">Supabase</span>
+            <span class="tech-tag">Stripe</span>
+          </div>
+          <a href="https://github.com/amadejdemsar-create/Fitness-app" target="_blank" rel="noopener" class="live-link">
+            <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            Poglej izvorno kodo
+          </a>
+        </div>
+
+        <!-- NativeAI Hub -->
+        <div class="card portfolio-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(139, 92, 246, 0.15)); border: 1px solid rgba(79, 70, 229, 0.2);">
+            <svg width="24" height="24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          </div>
+          <h3><a href="https://nativeai.agency" target="_blank" rel="noopener">NativeAI Hub <span class="link-icon">&#8599;</span></a></h3>
+          <p>Celovita AI ekosistemska platforma, ki katalogizira 100+ orodij, podjetij, vodnikov in ucnih poti. Vkljucuje tipiziran podatkovni sloj, 3D vizualne elemente s Three.js, primerjave cen in SEO optimiziran vsebinski sistem, ki se skalira brez tradicionalnega CMS-a.</p>
+          <div class="tech-tags">
+            <span class="tech-tag">Next.js 15</span>
+            <span class="tech-tag">React 19</span>
+            <span class="tech-tag">TypeScript</span>
+            <span class="tech-tag">Three.js</span>
+            <span class="tech-tag">Tailwind CSS</span>
+            <span class="tech-tag">Framer Motion</span>
+          </div>
+          <a href="https://nativeai.agency" target="_blank" rel="noopener" class="live-link">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Oglej si zivo stran
+          </a>
+        </div>
+
+        <!-- Hotel Scraper -->
+        <div class="card portfolio-card">
+          <div class="card-icon" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.15)); border: 1px solid rgba(245, 158, 11, 0.2);">
+            <svg width="24" height="24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </div>
+          <h3>Hotelski Ekstrakcijski Sistem</h3>
+          <p>Avtomatiziran sistem za ekstrakcijo hotelskih podatkov, ki poglobljeno preiskuje hotelske spletne strani, odkriva bliznje atrakcije preko SerpAPI in uporablja AI (Gemini + OpenAI) za strukturiranje vsebine v kategorije. Vkljucuje obdelavo opravil v ozadju z BullMQ/Redis in vmesnik za urejanje podatkov pred izvozom.</p>
+          <div class="tech-tags">
+            <span class="tech-tag rag-tag">Gemini AI</span>
+            <span class="tech-tag rag-tag">OpenAI API</span>
+            <span class="tech-tag">Express.js</span>
+            <span class="tech-tag">PostgreSQL</span>
+            <span class="tech-tag">BullMQ/Redis</span>
+            <span class="tech-tag">Docker</span>
+            <span class="tech-tag">Firecrawl</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Technical Proposal -->
+  <section id="proposal">
+    <div class="container">
+      <div class="section-label">Tehnični predlog</div>
+      <h2>RAG Aplikacija <em>Arhitektura</em></h2>
+      <p class="section-desc">Sistem, ki absorbira domensko specificno znanje, ustvari iskalne embeddinge in generira natancne, citirane odgovore z uporabo retrieval augmented generation pristopa.</p>
+
+      <div class="arch-container">
+        <div class="section-label" style="margin-bottom: 20px; text-align: center;">Arhitektura sistema</div>
+        <div class="arch-flow">
+          <div class="arch-box arch-user">
+            <div style="font-size: 18px; margin-bottom: 4px;">Uporabnik</div>
+            <div style="font-size: 10px; opacity: 0.7;">Vprasanje</div>
+          </div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-box arch-backend">
+            <div style="font-size: 18px; margin-bottom: 4px;">Backend</div>
+            <div style="font-size: 10px; opacity: 0.7;">Python / Node</div>
+          </div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-box arch-embed">
+            <div style="font-size: 18px; margin-bottom: 4px;">Embeddingi</div>
+            <div style="font-size: 10px; opacity: 0.7;">Google Emb. 2</div>
+          </div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-box arch-db">
+            <div style="font-size: 18px; margin-bottom: 4px;">Vector DB</div>
+            <div style="font-size: 10px; opacity: 0.7;">Pridobivanje</div>
+          </div>
+          <div class="arch-arrow">&rarr;</div>
+          <div class="arch-box arch-llm">
+            <div style="font-size: 18px; margin-bottom: 4px;">LLM</div>
+            <div style="font-size: 10px; opacity: 0.7;">Odgovor + viri</div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+          <p style="font-size: 13px; color: var(--text-dim); max-width: 620px; margin: 0 auto;">Uporabnik zastavi vprasanje &rarr; Backend ga pretvori v embedding &rarr; Vector DB pridobi relevantne dele znanja &rarr; LLM generira odgovor, utemeljen v pridobljenem kontekstu, s citiranimi viri.</p>
+        </div>
+      </div>
+
+      <div class="skills-grid" style="margin-top: 40px;">
+        <div class="skill-card">
+          <h4>
+            <span class="skill-icon" style="background: rgba(79, 70, 229, 0.12); color: var(--indigo-light);">
+              <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M6 12.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5ZM3 8.062C3 3.438 5.667 1 8 1s5 2.438 5 7.062c0 2.39-1.086 3.527-1.898 4.337C10.392 13.125 10 13.531 10 14.5a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5c0-.969-.392-1.375-1.102-2.101C4.086 11.59 3 10.453 3 8.062Z"/></svg>
+            </span>
+            Vnos dokumentov
+          </h4>
+          <p>Parsanje PDF-jev, spletnih strani, dokumentov in strukturiranih podatkov. Inteligentno razdeljevanje za optimalno pridobivanje z ohranjanjem metapodatkov.</p>
+        </div>
+        <div class="skill-card">
+          <h4>
+            <span class="skill-icon" style="background: rgba(6, 182, 212, 0.12); color: var(--cyan);">
+              <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+            </span>
+            Semanticno iskanje
+          </h4>
+          <p>Google Embeddings 2 za multimodalne vektorske reprezentacije. Hibridno iskanje, ki kombinira semanticno podobnost s klasicnim ujemanjem kljucnih besed.</p>
+        </div>
+        <div class="skill-card">
+          <h4>
+            <span class="skill-icon" style="background: rgba(139, 92, 246, 0.12); color: var(--violet);">
+              <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zM5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1H5zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1H5z"/><path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2z"/></svg>
+            </span>
+            Sestavljanje konteksta
+          </h4>
+          <p>Pametno upravljanje kontekstnega okna. Rangiranje in izbira najrelevantnejsih delov znanja, sestavljenih z metapodatki virov za LLM prompt.</p>
+        </div>
+        <div class="skill-card">
+          <h4>
+            <span class="skill-icon" style="background: rgba(34, 197, 94, 0.12); color: var(--green);">
+              <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/><path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"/></svg>
+            </span>
+            Utemeljeni odgovori
+          </h4>
+          <p>LLM generira odgovore strogo iz pridobljenega konteksta. Citiranje virov je vkljuceno pri vsakem odgovoru za preverjanje in zaupanje.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- LLM Models -->
+  <section id="models">
+    <div class="container">
+      <div class="section-label">LLM Modeli</div>
+      <h2>API Moznosti <em>& Cene</em></h2>
+      <p class="section-desc">Razlicni modeli za razlicne naloge. Kompleksno sklepanje uporablja mocnejsi model, medtem ko hitri poizvedbe uporabljajo stroskovni ucinkivitejsi model. Cene so na 1 milijon tokenov.</p>
+
+      <div class="model-header">
+        <span></span>
+        <span>Model</span>
+        <span>Input / 1M</span>
+        <span>Output / 1M</span>
+        <span>Uporaba</span>
+      </div>
+
+      <div class="model-grid">
+        <!-- Claude Opus 4.6 -->
+        <div class="model-card">
+          <div class="model-logo" style="background: #191919;">
+            <svg viewBox="0 0 24 24" fill="#D4A27F" xmlns="http://www.w3.org/2000/svg"><path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"/></svg>
+          </div>
+          <div class="model-info">
+            <h4>Claude Opus 4.6</h4>
+            <span>Anthropic &middot; 1M kontekst &middot; Najmocnejsi</span>
+          </div>
+          <div class="model-price">
+            <div class="price">$5.00</div>
+            <div class="label">Input</div>
+          </div>
+          <div class="model-price">
+            <div class="price">$25.00</div>
+            <div class="label">Output</div>
+          </div>
+          <div class="model-use-case">
+            <span class="use-pill use-complex">Kompleksno sklepanje</span>
+          </div>
+        </div>
+
+        <!-- Gemini 3.1 Pro -->
+        <div class="model-card">
+          <div class="model-logo" style="background: #1A1A2E;">
+            <svg viewBox="0 0 24 24" fill="#8E75B2" xmlns="http://www.w3.org/2000/svg"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>
+          </div>
+          <div class="model-info">
+            <h4>Gemini 3.1 Pro</h4>
+            <span>Google &middot; Najnovejsi flagship &middot; Preview</span>
+          </div>
+          <div class="model-price">
+            <div class="price">$2.00</div>
+            <div class="label">Input</div>
+          </div>
+          <div class="model-price">
+            <div class="price">$12.00</div>
+            <div class="label">Output</div>
+          </div>
+          <div class="model-use-case">
+            <span class="use-pill use-premium">Premium alternativa</span>
+          </div>
+        </div>
+
+        <!-- GPT-4.1 Mini -->
+        <div class="model-card">
+          <div class="model-logo" style="background: #1A1A1A;">
+            <svg viewBox="0 0 256 260" fill="#ffffff" xmlns="http://www.w3.org/2000/svg"><path d="M239.184 106.203a64.716 64.716 0 0 0-5.576-53.103C219.452 28.459 191 15.784 163.213 21.74A65.586 65.586 0 0 0 52.096 45.22a64.716 64.716 0 0 0-43.23 31.36c-14.31 24.602-11.061 55.634 8.033 76.74a64.665 64.665 0 0 0 5.525 53.102c14.174 24.65 42.644 37.324 70.446 31.36a64.72 64.72 0 0 0 48.754 21.744c28.481.025 53.714-18.361 62.414-45.481a64.767 64.767 0 0 0 43.229-31.36c14.137-24.558 10.875-55.423-8.083-76.483Zm-97.56 136.338a48.397 48.397 0 0 1-31.105-11.255l1.535-.87 51.67-29.825a8.595 8.595 0 0 0 4.247-7.367v-72.85l21.845 12.636c.218.111.37.32.409.563v60.367c-.056 26.818-21.783 48.545-48.601 48.601Zm-104.466-44.61a48.345 48.345 0 0 1-5.781-32.589l1.534.921 51.722 29.826a8.339 8.339 0 0 0 8.441 0l63.181-36.425v25.221a.87.87 0 0 1-.358.665l-52.335 30.184c-23.257 13.398-52.97 5.431-66.404-17.803ZM23.549 85.38a48.499 48.499 0 0 1 25.58-21.333v61.39a8.288 8.288 0 0 0 4.195 7.316l62.874 36.272-21.845 12.636a.819.819 0 0 1-.767 0L41.353 151.53c-23.211-13.454-31.171-43.144-17.804-66.405v.256Zm179.466 41.695-63.08-36.63L161.73 77.86a.819.819 0 0 1 .768 0l52.233 30.184a48.6 48.6 0 0 1-7.316 87.635v-61.391a8.544 8.544 0 0 0-4.4-7.213Zm21.742-32.69-1.535-.922-51.619-30.081a8.39 8.39 0 0 0-8.492 0L99.98 99.808V74.587a.716.716 0 0 1 .307-.665l52.233-30.133a48.652 48.652 0 0 1 72.236 50.391v.205ZM88.061 139.097l-21.845-12.585a.87.87 0 0 1-.41-.614V65.685a48.652 48.652 0 0 1 79.757-37.346l-1.535.87-51.67 29.825a8.595 8.595 0 0 0-4.246 7.367l-.051 72.697Zm11.868-25.58 28.138-16.217 28.188 16.218v32.434l-28.086 16.218-28.188-16.218-.052-32.434Z"/></svg>
+          </div>
+          <div class="model-info">
+            <h4>GPT-4.1 Mini</h4>
+            <span>OpenAI &middot; 1M kontekst &middot; Fine-tuning</span>
+          </div>
+          <div class="model-price">
+            <div class="price">$0.40</div>
+            <div class="label">Input</div>
+          </div>
+          <div class="model-price">
+            <div class="price">$1.60</div>
+            <div class="label">Output</div>
+          </div>
+          <div class="model-use-case">
+            <span class="use-pill use-balanced">Uravnotezena opcija</span>
+          </div>
+        </div>
+
+        <!-- Gemini 3 Flash -->
+        <div class="model-card">
+          <div class="model-logo" style="background: #1A1A2E;">
+            <svg viewBox="0 0 24 24" fill="#8E75B2" xmlns="http://www.w3.org/2000/svg"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>
+          </div>
+          <div class="model-info">
+            <h4>Gemini 3 Flash</h4>
+            <span>Google &middot; Frontier hitrost &middot; Preview</span>
+          </div>
+          <div class="model-price">
+            <div class="price">$0.50</div>
+            <div class="label">Input</div>
+          </div>
+          <div class="model-price">
+            <div class="price">$3.00</div>
+            <div class="label">Output</div>
+          </div>
+          <div class="model-use-case">
+            <span class="use-pill use-fast">Hitra & cenovno ugodna</span>
+          </div>
+        </div>
+
+        <!-- GPT-5 Mini -->
+        <div class="model-card">
+          <div class="model-logo" style="background: #1A1A1A;">
+            <svg viewBox="0 0 256 260" fill="#ffffff" xmlns="http://www.w3.org/2000/svg"><path d="M239.184 106.203a64.716 64.716 0 0 0-5.576-53.103C219.452 28.459 191 15.784 163.213 21.74A65.586 65.586 0 0 0 52.096 45.22a64.716 64.716 0 0 0-43.23 31.36c-14.31 24.602-11.061 55.634 8.033 76.74a64.665 64.665 0 0 0 5.525 53.102c14.174 24.65 42.644 37.324 70.446 31.36a64.72 64.72 0 0 0 48.754 21.744c28.481.025 53.714-18.361 62.414-45.481a64.767 64.767 0 0 0 43.229-31.36c14.137-24.558 10.875-55.423-8.083-76.483Zm-97.56 136.338a48.397 48.397 0 0 1-31.105-11.255l1.535-.87 51.67-29.825a8.595 8.595 0 0 0 4.247-7.367v-72.85l21.845 12.636c.218.111.37.32.409.563v60.367c-.056 26.818-21.783 48.545-48.601 48.601Zm-104.466-44.61a48.345 48.345 0 0 1-5.781-32.589l1.534.921 51.722 29.826a8.339 8.339 0 0 0 8.441 0l63.181-36.425v25.221a.87.87 0 0 1-.358.665l-52.335 30.184c-23.257 13.398-52.97 5.431-66.404-17.803ZM23.549 85.38a48.499 48.499 0 0 1 25.58-21.333v61.39a8.288 8.288 0 0 0 4.195 7.316l62.874 36.272-21.845 12.636a.819.819 0 0 1-.767 0L41.353 151.53c-23.211-13.454-31.171-43.144-17.804-66.405v.256Zm179.466 41.695-63.08-36.63L161.73 77.86a.819.819 0 0 1 .768 0l52.233 30.184a48.6 48.6 0 0 1-7.316 87.635v-61.391a8.544 8.544 0 0 0-4.4-7.213Zm21.742-32.69-1.535-.922-51.619-30.081a8.39 8.39 0 0 0-8.492 0L99.98 99.808V74.587a.716.716 0 0 1 .307-.665l52.233-30.133a48.652 48.652 0 0 1 72.236 50.391v.205ZM88.061 139.097l-21.845-12.585a.87.87 0 0 1-.41-.614V65.685a48.652 48.652 0 0 1 79.757-37.346l-1.535.87-51.67 29.825a8.595 8.595 0 0 0-4.246 7.367l-.051 72.697Zm11.868-25.58 28.138-16.217 28.188 16.218v32.434l-28.086 16.218-28.188-16.218-.052-32.434Z"/></svg>
+          </div>
+          <div class="model-info">
+            <h4>GPT-5 Mini</h4>
+            <span>OpenAI &middot; 400K kontekst &middot; Najnovejsi</span>
+          </div>
+          <div class="model-price">
+            <div class="price">$0.25</div>
+            <div class="label">Input</div>
+          </div>
+          <div class="model-price">
+            <div class="price">$2.00</div>
+            <div class="label">Output</div>
+          </div>
+          <div class="model-use-case">
+            <span class="use-pill use-fast">Budget OpenAI opcija</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pricing-note">
+        <div class="note-icon">&#128161;</div>
+        <p><strong>Priporocen pristop:</strong> Za rutinske poizvedbe se uporablja stroskovono ucinkivit model (Gemini 3 Flash ali GPT-5 Mini), kompleksna vprasanja pa se preusmerijo na zmogljivejsi model (Claude Opus 4.6 ali Gemini 3.1 Pro). Tako ostanejo stroski nizki, kakovost pa visoka tam, kjer je to najpomembnejse. Tipicna RAG poizvedba stane delcke centa.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Embeddings -->
+  <section id="embeddings">
+    <div class="container">
+      <div class="section-label">Embeddingi</div>
+      <h2>Vektorske <em>Reprezentacije</em></h2>
+      <p class="section-desc">Embeddingi pretvorijo besedilo, slike in drugo vsebino v numericne vektorje, ki zajamejo semanticni pomen, kar omogoca iskanje podobnosti po celotni bazi znanja.</p>
+
+      <div class="embed-highlight">
+        <div class="embed-icon">
+          <svg viewBox="0 0 24 24" fill="#4285F4" xmlns="http://www.w3.org/2000/svg"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></svg>
+        </div>
+        <div class="embed-content">
+          <h3>Google Embeddings 2</h3>
+          <p>Priporoceni model embeddingov za ta projekt. Za razliko od vecine modelov, ki obravnavajo le besedilo, Google Embeddings 2 nativno podpira vec modalnosti, kar pomeni, da lahko vdelujes in isces po razlicnih tipih vsebine znotraj istega vektorskega prostora.</p>
+          <div class="modality-tags">
+            <span class="modality-tag">Besedilo</span>
+            <span class="modality-tag">Slike</span>
+            <span class="modality-tag">Video</span>
+            <span class="modality-tag">Audio</span>
+            <span class="modality-tag">Dokumenti</span>
+          </div>
+          <div class="embed-price">
+            <strong>$0.15</strong> na 1M tokenov &middot; Batch cena: <strong>$0.075</strong> na 1M tokenov
+          </div>
+        </div>
+      </div>
+
+      <div class="pricing-note" style="margin-top: 24px;">
+        <div class="note-icon">&#127919;</div>
+        <p><strong>Zakaj Google Embeddings 2?</strong> Za sistem domenskega znanja, ki bo morda moral obdelovati dokumente s slikami, diagrami ali multimedijsko vsebino, en sam embedding model za vse formate bistveno poenostavi arhitekturo. Ni potrebe po locenih pipeline-ih za vsak tip vsebine. Cena je prav tako zelo konkurencna pri $0.15/1M tokenov.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Vector Databases -->
+  <section id="vectordb">
+    <div class="container">
+      <div class="section-label">Vektorske podatkovne baze</div>
+      <h2>Shranjevanje & <em>Pridobivanje</em></h2>
+      <p class="section-desc">Vektorska podatkovna baza hrani embeddinge in omogoca hitro iskanje podobnosti. Prava izbira je odvisna od obsega, preference za lastno gostovanje in obstojece infrastrukture.</p>
+
+      <div class="vdb-grid">
+        <!-- Pinecone -->
+        <div class="vdb-card">
+          <div class="vdb-header">
+            <div class="vdb-logo" style="background: #0D1117;">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.5l2.5 3.5h-5L12 2.5z" fill="#22C55E"/><path d="M12 6l4 5H8l4-5z" fill="#22C55E" opacity="0.85"/><path d="M12 10l5.5 6.5h-11L12 10z" fill="#22C55E" opacity="0.7"/><rect x="10.75" y="17" width="2.5" height="4" rx="1" fill="#22C55E" opacity="0.6"/></svg>
+            </div>
+            <div>
+              <h4>Pinecone</h4>
+              <span class="vdb-type">Popolnoma upravljan &middot; Serverless</span>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <ul>
+              <li class="pro">Brez upravljanja infrastrukture, takojsnje skaliranje</li>
+              <li class="pro">Velikodusen brezplacni nacrt (100K vektorjev) za MVP</li>
+              <li class="pro">Preprost API, najhitrejsa pot do produkcije</li>
+              <li class="pro">Vgrajeno hibridno iskanje (sparse + dense)</li>
+              <li class="con">Vendor lock-in, podatki zivijo v njihovem oblaku</li>
+              <li class="con">Stroski rastejo z uporabo pri vecjih volumnih</li>
+            </ul>
+          </div>
+          <div class="vdb-rec">Najboljse za: MVP in hitro prototipiranje.</div>
+        </div>
+
+        <!-- MongoDB Atlas -->
+        <div class="vdb-card">
+          <div class="vdb-header">
+            <div class="vdb-logo" style="background: #0D1117;">
+              <svg viewBox="0 0 24 24" fill="#47A248" xmlns="http://www.w3.org/2000/svg"><path d="M17.193 9.555c-1.264-5.58-4.252-7.414-4.573-8.115-.28-.394-.53-.954-.735-1.44-.036.495-.055.685-.523 1.184-.723.566-4.438 3.682-4.74 10.02-.282 5.912 4.27 9.435 4.888 9.884l.07.05A73.49 73.49 0 0111.91 24h.481c.114-1.032.284-2.056.51-3.07.417-.296.604-.463.85-.693a11.342 11.342 0 003.639-8.464c.01-.814-.103-1.662-.197-2.218zm-5.336 8.195s0-8.291.275-8.29c.213 0 .49 10.695.49 10.695-.381-.045-.765-1.76-.765-2.405z"/></svg>
+            </div>
+            <div>
+              <h4>MongoDB Atlas Vector Search</h4>
+              <span class="vdb-type">Upravljan &middot; Integriran</span>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <ul>
+              <li class="pro">Vektorsko iskanje + shranjevanje dokumentov v eni bazi</li>
+              <li class="pro">Brez locene infrastrukture za vektorje</li>
+              <li class="pro">Bogat poizvedovalni jezik za filtriranje metapodatkov</li>
+              <li class="pro">Znan ekosistem, obsezna dokumentacija</li>
+              <li class="con">Vektorsko iskanje je dodatek, ne glavna funkcionalnost</li>
+              <li class="con">Zmogljivost iskanja lahko zaostaja za namenskimi resitivami</li>
+            </ul>
+          </div>
+          <div class="vdb-rec">Najboljse za: Projekte, ki ze uporabljajo MongoDB.</div>
+        </div>
+
+        <!-- Weaviate -->
+        <div class="vdb-card">
+          <div class="vdb-header">
+            <div class="vdb-logo" style="background: #0D1117;">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="4.5" x2="5" y2="17" stroke="#00D4AA" stroke-width="1.2"/><line x1="12" y1="4.5" x2="19" y2="17" stroke="#00D4AA" stroke-width="1.2"/><line x1="5" y1="17" x2="19" y2="17" stroke="#00D4AA" stroke-width="1.2"/><circle cx="12" cy="4" r="2.5" fill="#00D4AA"/><circle cx="5" cy="17.5" r="2.5" fill="#00D4AA"/><circle cx="19" cy="17.5" r="2.5" fill="#00D4AA"/><circle cx="12" cy="13" r="1.5" fill="#00D4AA" opacity="0.6"/></svg>
+            </div>
+            <div>
+              <h4>Weaviate</h4>
+              <span class="vdb-type">Odprtokoden &middot; Lastno / Oblak</span>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <ul>
+              <li class="pro">Odprtokoden z mocno skupnostjo</li>
+              <li class="pro">Nativno hibridno iskanje (BM25 + vektorsko)</li>
+              <li class="pro">Vgrajeni moduli za vektorizacijo (brez zunanjega API-ja)</li>
+              <li class="pro">GraphQL API in REST API</li>
+              <li class="con">Bolj kompleksna nastavitev kot Pinecone</li>
+              <li class="con">Vecja poraba pomnilnika pri velikih podatkovnih zbirkah</li>
+            </ul>
+          </div>
+          <div class="vdb-rec">Najboljse za: Odprto kodno preferenco s potrebami po hibridnem iskanju.</div>
+        </div>
+
+        <!-- Qdrant -->
+        <div class="vdb-card">
+          <div class="vdb-header">
+            <div class="vdb-logo" style="background: #0D1117;">
+              <svg viewBox="0 0 57 64" fill="#DC244C" xmlns="http://www.w3.org/2000/svg"><path d="M28.667 0 .953 16v32l27.714 16 10.392-6V46l-10.392 6-17.32-10V22l17.32-10 17.32 10v40l10.393-6V16z"/><path d="M18.275 26v12l10.392 6 10.392-6V26l-10.392-6z"/></svg>
+            </div>
+            <div>
+              <h4>Qdrant</h4>
+              <span class="vdb-type">Odprtokoden &middot; Osnovan na Rust-u</span>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <ul>
+              <li class="pro">Napisan v Rust-u, izjemna zmogljivost</li>
+              <li class="pro">Napredno filtriranje s payload indeksi</li>
+              <li class="pro">Nizek pomnilniski odtis s kvantizacijo</li>
+              <li class="pro">gRPC + REST API-ji, Docker prijazen</li>
+              <li class="con">Manjsa skupnost kot alternative</li>
+              <li class="con">Oblacna ponudba je novejsa, manj dozorela</li>
+            </ul>
+          </div>
+          <div class="vdb-rec">Najboljse za: Zmogljivostno kriticne aplikacije pri vecjem obsegu.</div>
+        </div>
+
+        <!-- Chroma -->
+        <div class="vdb-card">
+          <div class="vdb-header">
+            <div class="vdb-logo" style="background: #0D1117;">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="10" r="4.5" fill="#FFCA28" opacity="0.85"/><circle cx="15" cy="10" r="4.5" fill="#EF5350" opacity="0.75"/><circle cx="12" cy="15" r="4.5" fill="#26C6DA" opacity="0.75"/></svg>
+            </div>
+            <div>
+              <h4>Chroma</h4>
+              <span class="vdb-type">Odprtokoden &middot; Python Native</span>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <ul>
+              <li class="pro">Najpreprostejsi API, 4 vrstice za zacetek</li>
+              <li class="pro">Deluje v pomnilniku ali persistentno, brez streznika</li>
+              <li class="pro">Prvorazredna LangChain in LlamaIndex integracija</li>
+              <li class="pro">Idealen za razvoj in manjse podatkovne zbirke</li>
+              <li class="con">Ni zasnovan za obsezno produkcijo</li>
+              <li class="con">Omejene moznosti grucenja in replikacije</li>
+            </ul>
+          </div>
+          <div class="vdb-rec">Najboljse za: Lokalni razvoj in manjse baze znanja.</div>
+        </div>
+
+        <!-- pgvector -->
+        <div class="vdb-card">
+          <div class="vdb-header">
+            <div class="vdb-logo" style="background: #0D1117;">
+              <svg viewBox="0 0 24 24" fill="#4169E1" xmlns="http://www.w3.org/2000/svg"><path d="M23.5594 14.7228a.5269.5269 0 0 0-.0478-.1364c-.1027-.2534-.3936-.37-.8688-.3461-.2891.0147-.5765.0508-.8608.1082-1.139.2313-1.7597.0723-1.9439-.1018 1.3008-2.0742 2.2388-4.3366 2.7754-6.6994.1209-.5323.2-1.1681.2139-1.8032.0007-.0426-.0007-.0843-.0007-.127-.0046-.6736-.1007-1.38-.4747-1.891C21.0326 2.5378 19.4563 1.3477 17.578.8352c-.2356-.0643-.5765-.1327-.9501-.1327-.004 0-.0078.0004-.0118.0005a2.8793 2.8793 0 0 0-.4045.0369c-.478-.3765-1.7096-.5922-3.3894-.5779-1.5.013-2.6676.1735-3.3358.4634a2.0266 2.0266 0 0 0-.0933-.0105h-.0058c-.6223-.0097-1.1762.0488-1.6454.1726a6.2268 6.2268 0 0 0-1.227.5258 7.5557 7.5557 0 0 0-.2826.1675c-.5179.3347-.8484.7724-1.0073 1.2455a4.7373 4.7373 0 0 0-.1758.8627 4.4344 4.4344 0 0 0-.0384.8738c.0085.2653.0384.5308.0892.7927.1118.5747.3382 1.0989.5944 1.6174.0572.1158.1127.2323.1653.3506.4458.9992.766 2.1257.5408 2.8558-.0287.0934-.0662.1742-.1153.2413-.3115.0184-.6025.0672-.8875.1554-1.2154.3748-2.1456 1.3124-2.2082 2.2224-.0032.0464-.0036.0924-.0011.1388a.9577.9577 0 0 0 .0166.1116c.13.7006.7658 1.1907 1.7427 1.3474.1539.0247.3118.0402.4729.0464l.022.001a4.2 4.2 0 0 0 .8352-.0503c.3077-.0553.6008-.1382.8794-.254-.0118.113-.0181.2264-.0193.3399-.0042.3942.0544.7883.2038 1.1355.0198.0458.0425.0899.068.1323a.7802.7802 0 0 0 .1077.1462c.4417.4923 1.1458.6363 1.8455.3794a3.1996 3.1996 0 0 0 .7421-.4253c.1748-.1306.336-.2759.4772-.4369.0072-.0081.0138-.0165.0206-.0248.1497.1438.3145.2644.4945.3553.3177.1614.6624.234 1.0164.2445.0366.0014.0732.001.1098.001.3064-.0125.5974-.0806.8655-.2112a2.4846 2.4846 0 0 0 .457-.2935c.1535-.1274.2873-.2663.3914-.42a.8688.8688 0 0 0 .1076-.1877c.0184-.0504.0319-.1045.0396-.164.048-.3885-.0484-.7994-.1487-1.219a16.979 16.979 0 0 1-.0658-.2869c-.0152-.0728-.0241-.1483-.0341-.2223.0568.0037.1131.0062.1695.0073.7562.0104 1.3404-.2075 1.7349-.6478.0377-.042.071-.0874.1006-.1352.0095-.0153.0188-.0309.0276-.0466.3204-.5685.172-1.331-.0313-1.7922-.0422-.0951-.0845-.1779-.1201-.2388-.0684-.1163-.1089-.1738-.1089-.1738s.034.0594.0954.1713c.0325.0593.072.1373.1122.2334.1889.4426.3254 1.1887.0206 1.7187a.395.395 0 0 1-.0235.0401c-.0091.0142-.0189.0281-.0291.0417-.366.4057-.9137.6017-1.6249.5933a3.7157 3.7157 0 0 1-.2174-.0103c-.023-.3462-.072-.6991-.1519-1.044-.0892-.3822-.2068-.7384-.3482-1.062.2822-.4946.4923-1.0393.6228-1.5771a6.4668 6.4668 0 0 0 .1989-1.519 7.2688 7.2688 0 0 0-.023-.6006l.001-.0003c.0753-.6085.1195-1.2312.1195-1.8729.0007-.3668-.0154-.7369-.0476-1.1082-.032-.3713-.0813-.744-.1489-1.1166a.805.805 0 0 0 .1308.0159c.0883.0093.204.0286.34.065.265.0706.6032.2002.953.413.6992.4233 1.4294 1.1285 1.7025 2.2323.3088 1.2492.3456 2.3474.1101 3.274-.1148.4535-.2917.8635-.4949 1.2388l.0045.0048c-.0625.1205-.1279.2367-.1889.3571-.0613.1202-.1183.2456-.1665.3727-.0933.2474-.1432.5085-.1337.7548a.755.755 0 0 0 .0622.2695c.3272.7136 1.5869.9399 2.8076.5027.4108-.1469.8349-.3637 1.2335-.641a5.5729 5.5729 0 0 0 .3785-.2903c.1261-.1042.2474-.2129.3619-.3267a4.3487 4.3487 0 0 0 .3077-.3539c.1762-.2276.3325-.4718.4448-.7422.0191-.046.0355-.0927.0507-.1399.039.0395.0771.0764.1156.1108.0777.0685.1617.1269.2536.1722.2243.1122.5041.1548.8224.142.268-.0108.5537-.0563.8411-.1322.5784-.153 1.0603-.4182 1.3696-.7382.0529-.0522.1007-.1069.1424-.164Z"/></svg>
+            </div>
+            <div>
+              <h4>pgvector</h4>
+              <span class="vdb-type">PostgreSQL razsiritev &middot; Lastno gostovanje</span>
+            </div>
+          </div>
+          <div class="pros-cons">
+            <ul>
+              <li class="pro">Uporablja obstojeci PostgreSQL, brez nove infrastrukture</li>
+              <li class="pro">ACID transakcije z vektorskimi podatki</li>
+              <li class="pro">Kombinacija SQL poizvedb z vektorskim iskanjem</li>
+              <li class="pro">Brez dodatnih stroskov, ce ze poganjate Postgres</li>
+              <li class="con">Zmogljivost zaostaja za namenskimi vektorskimi DB-ji</li>
+              <li class="con">Manj vektorsko specificnih optimizacij</li>
+            </ul>
+          </div>
+          <div class="vdb-rec">Najboljse za: PostgreSQL ekosisteme z minimalno dodano kompleksnostjo.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Implementation Plan -->
+  <section id="plan">
+    <div class="container">
+      <div class="section-label">Implementacijski plan</div>
+      <h2>Razvojni <em>Nacrt</em></h2>
+      <p class="section-desc">Fazni pristop k gradnji RAG aplikacije, od podatkovnega pipeline-a do produkcijske postavitve.</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="phase-time">Faza 1</div>
+          <h4>Podatkovni pipeline & vnos</h4>
+          <p>Gradnja pipeline-a za obdelavo dokumentov. Parsanje izvornih materialov (PDF-ji, spletna vsebina, strukturirani podatki) v ciste tekstovne dele. Implementacija inteligentnih strategij razdeljevanja, ki ohranjajo kontekst in metapodatke. Generiranje embeddingov z Google Embeddings 2 in shranjevanje v vektorsko bazo.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--violet);"></div>
+          <div class="phase-time">Faza 2</div>
+          <h4>RAG jedro & backend</h4>
+          <p>Gradnja osrednjega sistema za pridobivanje in generiranje. Implementacija semanticnega iskanja z vektorsko bazo, nacrtovanje prompt inzeniringa za utemeljene odgovore in vzpostavitev LLM integracije z usmerjanjem modelov (hiter model za preproste poizvedbe, mocen model za kompleksno sklepanje). Citiranje virov v vsakem odgovoru.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--cyan);"></div>
+          <div class="phase-time">Faza 3</div>
+          <h4>API & integracijski sloj</h4>
+          <p>Kreiranje REST/GraphQL API-ja, ki izpostavi RAG sistem. Implementacija avtentikacije, omejevanja hitrosti, zgodovine pogovorov in pretocnih odgovorov. Dodajanje koncnih tock za upravljanje dokumentov (nalaganje, posodabljanje, brisanje virov) in spremljanje zdravja sistema.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--green);"></div>
+          <div class="phase-time">Faza 4</div>
+          <h4>Kakovost & optimizacija</h4>
+          <p>Implementacija evalvacijskih metrik (relevantnost odgovorov, zvestoba, natancnost pridobivanja). Fino uglaševanje strategij razdeljevanja in parametrov pridobivanja na podlagi resnicnih poizvedb. Dodajanje predpomnjenja za pogosta vprasanja, implementacija nadomestnih strategij in optimizacija za stroske in zakasnitev.</p>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot" style="background: var(--amber);"></div>
+          <div class="phase-time">Faza 5</div>
+          <h4>Postavitev & produkcija</h4>
+          <p>Kontejnerizacija z Dockerjem, vzpostavitev CI/CD, konfiguracija spremljanja in belezenja. Postavitev na oblacno infrastrukturo z avtomatskim skaliranjem. Implementacija povratnih zank, da se sistem sčasoma izboljsuje na podlagi uporabniskih interakcij in popravkov.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>Amadej Demsar &middot; 2026</p>
+    </div>
+  </footer>
+</body>
+</html>
